@@ -4,23 +4,23 @@
 
 namespace csc715
 {
-std::vector<std::string> &split(const std::string &s, char delim, std::vector<std::string> &elems) 
-{
-    std::stringstream ss(s);
-    std::string item;
-    while (std::getline(ss, item, delim)) {
-        elems.push_back(item);
-    }
-    return elems;
-}
+  std::vector<std::string> &split(const std::string &s, char delim, std::vector<std::string> &elems) 
+  {
+      std::stringstream ss(s);
+      std::string item;
+      while (std::getline(ss, item, delim)) {
+          elems.push_back(item);
+      }
+      return elems;
+  }
 
-const double* get_data(const Eigen::MatrixXd& xx) {return xx.data();}
-std::vector<std::string> split(const std::string &s, char delim)
-{
-    std::vector<std::string> elems;
-    split(s, delim, elems);
-    return elems;
-}
+  const double* get_data(const Eigen::MatrixXd& xx) {return xx.data();}
+  std::vector<std::string> split(const std::string &s, char delim)
+  {
+      std::vector<std::string> elems;
+      split(s, delim, elems);
+      return elems;
+  }
 
   EdgeList read_edge_list(const char* filename)
   {
@@ -216,7 +216,7 @@ std::vector<std::string> split(const std::string &s, char delim)
     }
     uint64_t simhash(const PageFeatures& pf)
     {
-      std::vector<double> sums(pf.size());
+      std::vector<double> sums(64);
       
       for (auto iter = pf.cbegin(); iter != pf.cend(); ++iter)
       {

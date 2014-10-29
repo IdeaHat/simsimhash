@@ -1,0 +1,11 @@
+This project requires the following packages on Fedora 20
+
+eigen3
+gcc
+gcc-c++
+cmake
+
+On Ubuntu 14.04
+libeigen3-dev
+cmake
+g++
