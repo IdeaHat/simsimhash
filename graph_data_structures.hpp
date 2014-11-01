@@ -7,6 +7,13 @@
 
 namespace csc715
 {
+  #define HASH_KEY_BYTES 16
+  #define HASH_KEY_BITS (HASH_KEY_BYTES*8)
+  struct HashKey
+  {
+    uint8_t val[HASH_KEY_BYTES];
+  };  
+  
   typedef uint32_t node_tp;
   typedef Eigen::SparseMatrix<double> AdjacencyMatrix;
   typedef std::vector<std::tuple<node_tp,node_tp>> EdgeList;
@@ -23,12 +30,13 @@ namespace csc715
   
   AdjacencyMatrix adjacency_list_to_adjacency_matrix(const AdjacencyList& E);
   
-  typedef std::vector<std::tuple<uint64_t,double>> PageFeatures;
+  typedef std::vector<std::tuple<HashKey,double>> PageFeatures;
   
   PageFeatures generateFeatures(const AdjacencyList& al);
-  
-  uint64_t simhash(const PageFeatures& pf);
-  size_t hamming_distance(uint64_t x, uint64_t y);
+
+
+  HashKey simhash(const PageFeatures& pf);
+  size_t hamming_distance(const HashKey& x, const HashKey& y);
 
 }
 

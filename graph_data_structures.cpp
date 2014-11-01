@@ -1,6 +1,9 @@
 #include "graph_data_structures.hpp"
 #include <fstream>
 #include <stdlib.h>
+#include <openssl/sha.h>
+#include <openssl/md5.h>
+#include <iostream>
 
 namespace csc715
 {
@@ -185,6 +188,15 @@ namespace csc715
        
        return ret;
     }
+   template <typename T>
+    HashKey get_hash(const T& val)
+    {
+      HashKey hash_key;
+      MD5(reinterpret_cast<const uint8_t*>(&val), sizeof(val), hash_key.val);
+      //SHA1(reinterpret_cast<const uint8_t*>(&val), sizeof(val), hash_key.val);
+      //*reinterpret_cast<uint64_t*>(HashKey.val) = vakl
+      return hash_key;
+    }
     
     PageFeatures generateFeatures(const AdjacencyList& al)
     {
@@ -204,43 +216,58 @@ namespace csc715
         if (n)
         {
           uint64_t key_start = static_cast<uint64_t>(i)<<static_cast<uint64_t>(32);
-          ret.emplace_back(key_start|static_cast<uint64_t>(i),pr[i]);
+          ret.emplace_back(get_hash(key_start|static_cast<uint64_t>(i)),pr[i]);
           
           for (auto j = al[i].cbegin(); j!=al[i].cend();++j)
           {
-            ret.emplace_back(key_start|static_cast<uint64_t>(*j),pr[i]/static_cast<double>(n));
+            ret.emplace_back(get_hash(key_start|static_cast<uint64_t>(*j)),pr[i]/static_cast<double>(n));
           }
         }
       }
       return ret;
     }
-    uint64_t simhash(const PageFeatures& pf)
+    
+
+    HashKey simhash(const PageFeatures& pf)
     {
-      std::vector<double> sums(64);
+      const uint64_t num_bits = 8*HASH_KEY_BYTES;
+      std::vector<double> sums(num_bits);
       
       for (auto iter = pf.cbegin(); iter != pf.cend(); ++iter)
       {
-        uint64_t key = std::get<0>(*iter);
-        double value = std::get<0>(*iter);
+        HashKey key = std::get<0>(*iter);
+        double value = std::get<1>(*iter);
         
-        for (uint64_t j = 0; j < 64; j++)
+        for (uint64_t j = 0; j < num_bits; j++)
         {
-          int passed = (key & 2*(static_cast<uint64_t>(1)<<j))>0;
+          uint64_t byte_num = (j/8);
+          uint64_t bit_num = (j%8);
+          int passed = (key.val[byte_num] & (1<<bit_num))>0;
           int multiplyer = 2*passed-1;
           sums[j]+=(multiplyer*value);
         }
       }
       
-      uint64_t ret = 0;
-      for (int i = 0; i < 64; i++)
+      HashKey ret;
+      memset(ret.val,0,HASH_KEY_BYTES);
+      
+      for (int i = 0; i < num_bits; i++)
       {
-        ret |= (sums[i]>0)<<i;
+        uint64_t byte_num = (i/8);
+        uint64_t bit_num = (i%8);
+        ret.val[byte_num] |= (sums[i]>0)<<bit_num;
       }
       
       return ret;
     }
-    size_t hamming_distance(uint64_t x, uint64_t y)
+    size_t hamming_distance(const HashKey& x, const HashKey& y)
     {
-      return __builtin_popcountll(x^y);
+      int sum = 0;
+      int lim = HASH_KEY_BYTES;
+      for (int i = 0; i < lim; i++)
+      {
+         sum+=__builtin_popcountll(x.val[i]^y.val[i]);
+      }
+      return sum;
     }
 }

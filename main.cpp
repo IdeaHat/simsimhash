@@ -24,7 +24,7 @@ int getdir (const std::string& dir, std::vector<std::string> &files)
       stat(fullname.c_str(), &st);
       if (!S_ISDIR(st.st_mode))
       {
-          files.push_back(std::move(fullname));
+          files.push_back(string(dirp->d_name));
       }
     }
     closedir(dp);
@@ -86,14 +86,14 @@ int main(int argc,const char** argv)
   p4_dir_comp comp;
   std::sort(files.begin(), files.end(), comp);
   
-  uint64_t last_data;
+  HashKey last_data;
   struct timespec start,stop;
   std::vector<double> diffs;
 
   for (int i = 0; i < files.size(); i++)
   {
 
-    const std::string& infile = files[i];  
+    std::string infile = infolder+files[i];  
     
     
     //std::cout << "Reading File " << infile << "..." << std::endl; 
@@ -105,19 +105,24 @@ int main(int argc,const char** argv)
 
     //std::cout << "Calculating page feautres..." << std::endl;
     auto features = generateFeatures(al);
-    uint64_t curr_hash = simhash(features);
+    HashKey curr_hash = simhash(features);
     
 
     double d = 0;
     if (i > 0)
     {
-      d=1.0-(hamming_distance(last_data,curr_hash)/64.0);
+      d=1.0-(hamming_distance(last_data,curr_hash)/static_cast<double>(HASH_KEY_BITS));
       diffs.push_back(d);
     }
     clock_gettime(CLOCK_REALTIME,&stop);
     auto td = diff(start,stop);
     double ms = 1000.0*td.tv_sec+1.0e-6*td.tv_nsec;
-    std::cout << i << ':' << std::hex << curr_hash << std::dec;
+    std::cout << i << ':' << std::hex;
+    for (int j = 0; j < HASH_KEY_BYTES; j++)
+    {
+    std::cout << (int)curr_hash.val[j];
+    }
+    std::dec;
     std::cout << '=' << d << '@' << ms;
     std::cout << std::endl;
     last_data=curr_hash;
