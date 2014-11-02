@@ -17,6 +17,10 @@ described in section 5.5 of
     similarity for anomaly detection. Journal of Internet Services and
     Applications, 1(1), 19-30.
 
+This project is hosted publically at 
+
+https://github.com/IdeaHat/simsimhash
+
 =====================================USAGE=====================================
 
 simsimhash: Utility for running the algortihm described in Papadimitiou et. al
