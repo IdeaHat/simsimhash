@@ -48,8 +48,11 @@ void print_help()
 {
   std::cout << 
   "simsimhash: Utility for running the algortihm described in Papadimitiou et. al" << std::endl <<
-  "Usage" << std::endl << std::endl <<
-  "  simsimhash <folder> <hash-difference-file> <anomaly_file>" << std::endl;
+  "Usage:" << std::endl << std::endl <<
+  "  simsimhash <folder> <hash-difference-file> <anomaly_file>" << std::endl << std::endl <<
+  "  <folder> path to folder containing only graph files to compare" <<std::endl <<
+  "  <hash-difference-file>  output file of all the difference values measured" << std::endl <<
+  "  <anomaly_file> output file containing just the anomaly data"<< std::endl;
 };
 
 struct p4_dir_comp
@@ -66,8 +69,18 @@ struct p4_dir_comp
 int main(int argc,const char** argv)
 {
   using namespace csc715;
-  
-  if (argc < 4)
+
+  if (argc >= 2)
+  {
+     if (std::string(argv[1])=="--help" ||
+         std::string(argv[1])=="-h")
+     {
+        print_help();
+        return 0;
+     }
+  }
+
+  if (argc < 5)
   {
     std::cerr << "Error, you must have 4 arguments. See the following usage" << std::endl;
     print_help();

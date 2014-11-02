@@ -1,11 +1,83 @@
-This project requires the following packages on Fedora 20
+Project: Project 2, CSC791
+Author: Nathan Climer <njclimer@ncsu.edu>
+Prerequisites: Matlab
+Environment: Tested on Fedora 20, but should run on any system with matlab
 
-eigen3
-gcc
-gcc-c++
-cmake
+===============================FILE CONTENTS===================================
+-Overview
+-Usage
+-Requirements
+-Build Instructions
+===================================OVERVIEW====================================
 
-On Ubuntu 14.04
-libeigen3-dev
-cmake
-g++
+This project contains the source code in order to run the simsimhash algorithm
+described in section 5.5 of 
+
+    Papadimitriou, P., Dasdan, A., & Garcia-Molina, H. (2010). Web graph
+    similarity for anomaly detection. Journal of Internet Services and
+    Applications, 1(1), 19-30.
+
+=====================================USAGE=====================================
+
+simsimhash: Utility for running the algortihm described in Papadimitiou et. al
+Usage:
+
+  simsimhash <folder> <hash-difference-file> <anomaly_file>
+
+  <folder> path to folder containing only graph files to compare
+  <hash-difference-file>  output file of all the difference values measured
+  <anomaly_file> output file containing just the anomaly data
+
+=================================REQUIREMENTS==================================
+
+This project requires the following packages:
+
+ - Fedora 20
+   + eigen3
+   + gcc
+   + gcc-c++
+   + cmake
+
+Ubuntu 14.04
+   + libeigen3-dev
+   + cmake
+   + g++
+   + libssl-dev
+
+This should build on other platforms providing the above package
+versions are installed for that platform.
+
+==============================BUILD INSTRUCTIONS===============================
+
+Because this project uses CMake, you should only have to generate
+the project for you desired build system. This readme
+will layout how to make the project for the "Unix Makefile"
+generator.
+
+1. Clone or Extract the repository to a directory (refered to as
+   "source directory").
+2. Create a folder for which you want to build (refered to as
+   "build directory").
+3. Navigate to the build directory
+4. Call cmake with the command
+
+   cmake -G "Unix Makefiles" {source directory} {options}
+
+   replacing {source directory} with either the path or the relative
+   path to the project.
+
+   You may supply the follow options:
+   -DCMAKE_BUILD_TYPE=Release         Builds in Release Mode
+   -DCMAKE_BUILD_TYPE=Debug         Builds in Release Mode
+
+5. Call "make".
+
+Alternatively, there is a a shell script make_project.sh which will
+build the project for you in a build directory.
+
+For more details:
+
+http://www.cmake.org/cmake/help/v2.8.8/cmake.html
+
+
+
