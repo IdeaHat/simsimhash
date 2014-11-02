@@ -188,11 +188,17 @@ namespace csc715
        
        return ret;
     }
+    #define HASH_SIZE 16
    template <typename T>
     HashKey get_hash(const T& val)
     {
+      uint8_t full_hash[HASH_SIZE];
       HashKey hash_key;
-      MD5(reinterpret_cast<const uint8_t*>(&val), sizeof(val), hash_key.val);
+      MD5(reinterpret_cast<const uint8_t*>(&val), sizeof(val), full_hash);
+      for (int i = 0; i < HASH_KEY_BYTES; i++)
+      {
+         hash_key.val[i] = full_hash[i];
+      }
       //SHA1(reinterpret_cast<const uint8_t*>(&val), sizeof(val), hash_key.val);
       //*reinterpret_cast<uint64_t*>(HashKey.val) = vakl
       return hash_key;

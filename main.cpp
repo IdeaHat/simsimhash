@@ -80,7 +80,7 @@ int main(int argc,const char** argv)
      }
   }
 
-  if (argc < 5)
+  if (argc < 4)
   {
     std::cerr << "Error, you must have 4 arguments. See the following usage" << std::endl;
     print_help();

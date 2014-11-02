@@ -3,7 +3,7 @@ exectuable_path = fullfile('build','simsimhash');
 datadir = '/home/njclimer/data/p4';
 
 datasets = {'enron','as-733','enron_noempty','p2p-Gnutella','reality_mining_voices'};
-%close all;
+close all;
 fclose all;
 for i=1:numel(datasets)
     system([exectuable_path ' ' fullfile(datadir,datasets{i}) ' '...
@@ -16,7 +16,7 @@ for i=1:numel(datasets)
     md = median(coeffs);
     disp(cutoff-md+3*mr);
     cutoff = md-3*mr;
-    figure;
+    f = figure;
     scatter(find(coeffs>cutoff),coeffs(coeffs>cutoff),'blue')
     hold on;
     scatter(find(coeffs<cutoff),coeffs(coeffs<cutoff),'red','x');
@@ -28,6 +28,7 @@ for i=1:numel(datasets)
     end
     title(['Simsimhash for ',datasets{i}]);
     xlabel('Iteration (0 indexed)');
-    ylabel('Simularity Score');    
+    ylabel('Simularity Score');
+    print(f,[datasets{i} '.png'],'-dpng');
 end
 
